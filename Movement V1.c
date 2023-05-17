@@ -44,7 +44,7 @@ void rail2tower(int towerNum)
 
 void railDist(int dist){
     cmpc();
-    while((gmpc()<(dist * 10))
+    while(gmpc()<(dist * 10))
     {
         if(get_create_lbump()==1){
             create_drive_direct(180, 100);
@@ -62,4 +62,3 @@ void railDist(int dist){
     }
     ao();
 }
-//Test Change
