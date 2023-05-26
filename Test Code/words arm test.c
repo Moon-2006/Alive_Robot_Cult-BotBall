@@ -90,23 +90,7 @@ void highGrab() {
   int armPosition = get_servo_position(arm);
   int basePosition = gmpc(base);
   while(basePosition != tower || armPosition != highReady){
-    if(basePosition < tower){
-      basePosition += 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else if(basePosition > tower){
-      basePosition -= 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else {
-      freeze(base);
-    }if(armPosition < highReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }else if(armPosition > highReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }
+    grabReadyUnlooped(1);
   }
   set_servo_position(claw, open);
   msleep(200);
@@ -122,27 +106,8 @@ void highGrab() {
 void lowGrab() {
   enable_servo(arm);
   enable_servo(claw);
-  int speed = 3;
-  int armPosition = get_servo_position(arm);
-  int basePosition = gmpc(base);
   while(basePosition != tower || armPosition != lowReady){
-    if(basePosition < tower){
-      basePosition += 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else if(basePosition > tower){
-      basePosition -= 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else {
-      freeze(base);
-    }if(armPosition < lowReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }else if(armPosition > lowReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }
+    grabReadyUnlooped(0);
   }
   set_servo_position(claw, open);
   msleep(200);
@@ -160,50 +125,25 @@ void grabReady(int height){
   int basePosition = gmpc(base);
     if(height == 0){
         while(basePosition != tower || armPosition != lowReady){
-        if(basePosition < tower){
-            basePosition += 1;
-            mtp(base, baseSpeed, basePosition); 
-        }else if(basePosition > tower){
-            basePosition -= 1;
-            mtp(base, baseSpeed, basePosition); 
-        }else {
-            freeze(base);
-        }if(armPosition < lowReady){
-            armPosition += 1;
-            set_servo_position(armPosition);
-            msleep(speed);
-        }else if(armPosition > lowReady){
-            armPosition += 1;
-            set_servo_position(armPosition);
-            msleep(speed);
-    }
-  }
+            grabReadyUnlooped(0);
+            msleep(1);
+        }
   set_servo_position(claw, open);
   msleep(200);
     }
   if(height == 1){
       while(basePosition != tower || armPosition != highReady){
-    if(basePosition < tower){
-      basePosition += 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else if(basePosition > tower){
-      basePosition -= 1;
-      mtp(base, baseSpeed, basePosition); 
-    }else {
-      freeze(base);
-    }if(armPosition < highReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }else if(armPosition > highReady){
-      armPosition += 1;
-      set_servo_position(armPosition);
-      msleep(speed);
-    }
+        grabReadyUnlooped(1);
+        msleep(1);
   }
 }
-    
+//maybe use for moving arm as create switches towers    
 void grabReadyUnlooped(int height){
+  enable_servo(arm);
+  enable_servo(claw);
+  int speed = 3;
+  int armPosition = get_servo_position(arm);
+  int basePosition = gmpc(base);
     if(height == 0){
         if(basePosition < tower){
             basePosition += 1;
@@ -223,5 +163,23 @@ void grabReadyUnlooped(int height){
             msleep(speed);
         }
     }
-    else if(height == 1
+    else if(height == 1){
+        if(basePosition < tower){
+      basePosition += 1;
+      mtp(base, baseSpeed, basePosition); 
+    }else if(basePosition > tower){
+      basePosition -= 1;
+      mtp(base, baseSpeed, basePosition); 
+    }else {
+      freeze(base);
+    }if(armPosition < highReady){
+      armPosition += 1;
+      set_servo_position(armPosition);
+      msleep(speed);
+    }else if(armPosition > highReady){
+      armPosition += 1;
+      set_servo_position(armPosition);
+      msleep(speed);
+    }
+    }
 }
