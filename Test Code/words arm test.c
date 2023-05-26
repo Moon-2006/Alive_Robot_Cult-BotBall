@@ -16,6 +16,7 @@ int placeReady;
 //motors
 int base;
 int baseSpeed;
+int armDeg = 4;
 
 int tower;
 int stack;
@@ -145,10 +146,10 @@ void grabReadyUnlooped(int height){
   int armPosition = get_servo_position(arm);
   int basePosition = gmpc(base);
     if(height == 0){
-        if(basePosition < tower){
+        if(basePosition < tower*armDeg){
             basePosition += 1;
             mtp(base, baseSpeed, basePosition); 
-        }else if(basePosition > tower){
+        }else if(basePosition > tower*armDeg){
             basePosition -= 1;
             mtp(base, baseSpeed, basePosition); 
         }else {
@@ -164,10 +165,10 @@ void grabReadyUnlooped(int height){
         }
     }
     else if(height == 1){
-        if(basePosition < tower){
+        if(basePosition < tower*armDeg){
       basePosition += 1;
       mtp(base, baseSpeed, basePosition); 
-    }else if(basePosition > tower){
+    }else if(basePosition > tower*armDeg){
       basePosition -= 1;
       mtp(base, baseSpeed, basePosition); 
     }else {
