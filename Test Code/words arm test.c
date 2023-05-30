@@ -1,32 +1,33 @@
 //servos
-int claw;
-int arm;
+int claw = 0;
+int arm = 1;
 
 //tower grab values
 int high;
 int low;
-int galClose;
-int cubeClose;
+int open = 1200;
+int galClose = 20;
+int cubeClose = 50;
 
 int highReady;
 int lowReady;
 int placeReady;
 
-
 //motors
-int base;
-int baseSpeed;
-int armDeg = 4;
+int base = 0;
+int baseSpeed = 200;
+float armDeg = 3.89;
 
-int tower;
-int stack;
+int tower = 5;
+int stack = 90;
 
 //touch sensor for calibration
-int set;
+int set = 0;
 
 void reset();
 void place();
 void grabReady(int height);
+void grabReadyUnlooped(int height);
 void highGrab();
 void lowGrab();
     
@@ -83,7 +84,6 @@ void place() {
   msleep(100);
   
 }
-
 void highGrab() {
   enable_servo(arm);
   enable_servo(claw);
@@ -103,7 +103,6 @@ void highGrab() {
     set_servo_position(claw, galClose);   
   }msleep(200);
 }
-
 void lowGrab() {
   enable_servo(arm);
   enable_servo(claw);
