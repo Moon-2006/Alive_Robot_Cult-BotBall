@@ -117,18 +117,18 @@ void grabReadyUnlooped(int height){
   int shoulderPosition = get_servo_position(shoulder);
     if(height == 0){
         if(abs(basePosition) < tower*armDeg){
-            basePosition += 1;
-            mtp(base, baseSpeed, basePosition); 
-        }else if(abs(basePosition) > tower*armDeg){
-            basePosition -= 1;
-            mtp(base, baseSpeed, basePosition); 
-        }else {
+            mav(base, baseSpeed);
+            msleep(1);
+        }if(abs(basePosition) > tower*armDeg){
+            mav(base, baseSpeed);
+            msleep(1);
+        }if(abs(basePosition) == tower*armDeg) {
             ao();
         }if(armPosition < low){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
-        }else if(armPosition > low){
+        }if(armPosition > low){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
@@ -136,7 +136,7 @@ void grabReadyUnlooped(int height){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
-        }else if(shoulderPosition > tuck){
+        }if(shoulderPosition > tuck){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
@@ -144,19 +144,19 @@ void grabReadyUnlooped(int height){
     }
     
     else if(height == 1){
-     if(basePosition < tower*armDeg){
-      mav(base, baseSpeed);
-      msleep(1);
-    }else if(basePosition > tower*armDeg){
-      mav(base, baseSpeed);
-      msleep(1);
-    }else {
-      ao();
-    }if(armPosition < high){
+     if(abs(basePosition) < tower*armDeg){
+            mav(base, baseSpeed);
+            msleep(1);
+        }if(abs(basePosition) > tower*armDeg){
+            mav(base, baseSpeed);
+            msleep(1);
+        }if(abs(basePosition) == tower*armDeg) {
+            ao();
+        }if(armPosition < high){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
-        }else if(armPosition > high){
+        }if(armPosition > high){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
@@ -164,7 +164,7 @@ void grabReadyUnlooped(int height){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
-        }else if(shoulderPosition > tuck){
+        }if(shoulderPosition > tuck){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
