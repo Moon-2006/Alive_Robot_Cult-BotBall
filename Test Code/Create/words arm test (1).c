@@ -2,32 +2,28 @@
 int claw = 2;
 int arm = 1;
 int shoulder = 0;
-
 //tower grab values
 int open = 1900;
 int galClose = 950;
 int cubeClose = 1144;
-
 //arm values
 int high = 213;
 int low = 1826;
 int placeReady;
-
 //shoulder values
+int lPull = 1800;
 int lTilt  = 1646;
-int pull = 1504;
+int hPull = 1504;
 int hTilt = 1928; 
 int tuck = 1350;
 //motors
 int base = 0;
-int baseSpeed = 200;
-float armDeg = 5.4;
+int baseSpeed = -250;
+float armDeg = -5.4;
 int tower = 90;
 int stack = 15;
-
 //touch sensor for calibration
-int set = 0;
-
+int set = 2;
 void reset();
 void place();
 void grabReady(int height);
@@ -37,40 +33,28 @@ void lowGrab();
     
 int main() {
   reset();
-  msleep(1000);
-  highGrab(0);
   msleep(2000);
-  place();
-  msleep(2000);
-  reset();
-  //move create to low tower
-  msleep(20000);
-  lowGrab();
-  msleep(2000);
-  place();
-  msleep(2000);
-  reset();
+  lowGrab(1);
   return 0;
 }
 void reset(){
   while(digital(set) == 0){
-    mav(base, baseSpeed);
+    mav(base, -baseSpeed);
     msleep(1);
-  }freeze(base);
+  }
+  ao();
   cmpc(base);
 }
 void place() {
   enable_servo(arm);
   enable_servo(claw);
-  int speed = 3;
-  int armPosition = get_servo_position(arm);
-  int basePosition = gmpc(base);
+  enable_servo(shoulder);
   while(basePosition != stack || armPosition != placeReady){
     if(basePosition < stack){
-      basePosition += 1;
+      basePosition += 2;
       mtp(base, baseSpeed, basePosition); 
     }else if(basePosition > stack){
-      basePosition -= 1;
+      basePosition -= 2;
       mtp(base, baseSpeed, basePosition); 
     }else {
       freeze(base);
@@ -92,10 +76,6 @@ void highGrab(int object) {
   enable_servo(arm);
   enable_servo(claw);
   enable_servo(shoulder);
-  int speed = 3;
-  int armPosition = get_servo_position(arm);
-  int basePosition = gmpc(base);
-  int shoulderPosition = get_servo_position(shoulder);
   while(basePosition != tower || armPosition != high || shoulderPosition != tuck){
     grabReadyUnlooped(1);
   }
@@ -112,6 +92,10 @@ void highGrab(int object) {
 void lowGrab(int object) {
   enable_servo(arm);
   enable_servo(claw);
+  enable_servo(shoulder);
+  int armPosition = get_servo_position(arm);
+  int basePosition = gmpc(base);
+  int shoulderPosition = get_servo_position(shoulder);
   while(basePosition != tower || armPosition != low || shoulderPosition != tuck){
     grabReadyUnlooped(0);
   }
@@ -123,23 +107,23 @@ void lowGrab(int object) {
   msleep(200);
   set_servo_position(shoulder, lPull);
 }
-
 //maybe use for moving arm as create switches towers    
 void grabReadyUnlooped(int height){
   enable_servo(arm);
   enable_servo(claw);
-  int speed = 3;
-  int shoulderPosition = get_servo_position(shoulder);
+  int speed = 1;
+  int armPosition = get_servo_position(arm);
   int basePosition = gmpc(base);
+  int shoulderPosition = get_servo_position(shoulder);
     if(height == 0){
-        if(basePosition < tower*armDeg){
+        if(abs(basePosition) < tower*armDeg){
             basePosition += 1;
             mtp(base, baseSpeed, basePosition); 
-        }else if(basePosition > tower*armDeg){
+        }else if(abs(basePosition) > tower*armDeg){
             basePosition -= 1;
             mtp(base, baseSpeed, basePosition); 
         }else {
-            freeze(base);
+            ao();
         }if(armPosition < low){
             armPosition += 1;
             set_servo_position(armPosition);
@@ -148,7 +132,7 @@ void grabReadyUnlooped(int height){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
-        }}if(shoulderPosition < tuck){
+        }if(shoulderPosition < tuck){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
@@ -158,15 +142,16 @@ void grabReadyUnlooped(int height){
             msleep(speed);
         }
     }
+    
     else if(height == 1){
-        if(basePosition < tower*armDeg){
-      basePosition += 1;
-      mtp(base, baseSpeed, basePosition); 
+     if(basePosition < tower*armDeg){
+      mav(base, baseSpeed);
+      msleep(1);
     }else if(basePosition > tower*armDeg){
-      basePosition -= 1;
-      mtp(base, baseSpeed, basePosition); 
+      mav(base, baseSpeed);
+      msleep(1);
     }else {
-      freeze(base);
+      ao();
     }if(armPosition < high){
             armPosition += 1;
             set_servo_position(armPosition);
@@ -175,7 +160,7 @@ void grabReadyUnlooped(int height){
             armPosition += 1;
             set_servo_position(armPosition);
             msleep(speed);
-        }}if(shoulderPosition < tuck){
+        }if(shoulderPosition < tuck){
             armPosition += 1;
             set_servo_position(shoulderPosition);
             msleep(speed);
@@ -185,4 +170,5 @@ void grabReadyUnlooped(int height){
             msleep(speed);
         }
     }
+    return;
 }
